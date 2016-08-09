@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from "bootstrap/pagination.html" import render_pagination %}
+    {% block content %}
+    <div class="page-header">
+    <div class="container">
+        <h2>{{self.title()}}</h2>
+    </div>
+    </div>
+    <div class="container">
+        <h5>欢迎来到一个交流flask技术的个人博客</h5>
+        {% for post in posts %}
+            <h2><a href="{{ url_for('main.post', id = post.id) }}">{{ post.title }}</a></h2>
+            <div>
+                {{ post.body_html|safe }}
+            </div>
+        {% endfor %}
+        <!--<a href="{{ url_for('main.edit') }}" class="btn btn-primary">发表新文章</a>-->
+        {% if pagination %}
+            {{ render_pagination(pagination) }}
+        {% endif %}
+    </div>
+    {% endblock content %}

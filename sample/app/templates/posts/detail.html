@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html'as wtf %}
+{% block page_body %}
+
+    <div class="container">
+
+        <span>作者:{{ post.author.name }}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ _("发表日期") }}:{{ post.created }}</span>
+        {% if current_user.is_authenticated and current_user.name==post.author.name%}
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span><a href="{{ url_for('main.edit', id = post.id) }}">编辑本文章</a></span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span><a href="{{ url_for('main.delete', id = post.id) }}">删除本文章</a></span>
+         &nbsp;&nbsp;&nbsp;&nbsp;
+        {% endif %}
+        <hr>
+        <div>
+            {{post.body_html|safe}}
+        </div>
+
+        {% if current_user.is_authenticated %}
+        <h3>评论</h3>
+
+        <div>
+            {{wtf.quick_form(form)}}
+        </div>
+        {% else %}
+            <div class="alert alert-info">评论请登录本博客</div>
+        {% endif %}
+
+        {# 评论列表 #}
+        {% for comment in post.comments|sort(attribute='created',reverse=True) %}
+            <div class="media">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object img-circle" src="{{url_for('static' ,filename='user1.png')}}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <div>{{ comment.author.name }}</div>
+                    <small class="text-muted">{{ comment.created }}</small>
+                     <div>{{ comment.body }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
